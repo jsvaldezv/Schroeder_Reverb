@@ -23,11 +23,11 @@ float Reverb_Filters::processAllPass(float x, int inChannel, float inFeedback)
     
     float y;
     
-    float inDL = x + (-myFeedbackGain)*fb1[inChannel];
+    float inDL = x + ((-myFeedbackGain) * fb1[inChannel]);
     
     float outDL = circularBuffer.processSample(inDL, inChannel);
     
-    y = outDL + myFeedbackGain * inDL;
+    y = outDL + (myFeedbackGain * inDL);
     
     fb1[inChannel] = outDL;
     
@@ -40,13 +40,14 @@ float Reverb_Filters::processComb(float x, int inChannel, float inFeedback)
     
     float y;
     
-    float inDL = x + (-myFeedbackGain)*fb1[inChannel];
+    float inDL = x + ((-myFeedbackGain) * fb1[inChannel]);
     
     float outDL = circularBuffer.processSample(inDL, inChannel);
     
     y = outDL;
     
     fb1[inChannel] = outDL;
+    //fb1[inChannel] = processAllPass (outDL, inChannel, myFeedbackGain);
     
     return y;
 }

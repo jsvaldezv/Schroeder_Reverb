@@ -150,10 +150,10 @@ void ReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
 
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        float preDelaySec = 500 * 0.001;
+        float preDelaySec = preDelayValue * 0.001;
         float preDelayInSamples = preDelaySec * getSampleRate();
         
-        preDelay.setDelaySamples(preDelayInSamples);
+        preDelay.setDelaySamples (preDelayInSamples);
         
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
@@ -161,17 +161,19 @@ void ReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
             
             float preDelaySample = preDelay.processSample(sample, channel);
             
-            float combOneSample = combFilterOne.processComb(preDelaySample, channel, 0.7f);
-            float combTwoSample = combFilterTwo.processComb(preDelaySample, channel, 0.7f);
-            float combThreeSample = combFilterThree.processComb(preDelaySample, channel, 0.7f);
-            float combFourSample = combFilterFour.processComb(preDelaySample, channel, 0.7f);
+            float combOneSample = combFilterOne.processComb (preDelaySample, channel, decayTimeValue);
+            float combTwoSample = combFilterTwo.processComb (preDelaySample, channel, decayTimeValue);
+            float combThreeSample = combFilterThree.processComb (preDelaySample, channel, decayTimeValue);
+            float combFourSample = combFilterFour.processComb (preDelaySample, channel, decayTimeValue);
             
-            float allPassOneSample = (combOneSample + combTwoSample + combThreeSample + combFourSample);
+            float allPassOneSample = (combOneSample + combTwoSample + combThreeSample + combFourSample) * 0.125f;
             
-            float allPassTwoSample = allPassOne.processAllPass(allPassOneSample, channel, 0.7f);
-            float reverb = allPassTwo.processAllPass(allPassTwoSample, channel, 0.7f);
+            float allPassTwoSample = allPassOne.processAllPass (allPassOneSample, channel, decayTimeValue);
+            float reverb = allPassTwo.processAllPass (allPassTwoSample, channel, decayTimeValue);
             
-            buffer.setSample(channel, i, reverb);
+            float y = ((1.0f - dryWetValue) * sample) + (dryWetValue * reverb);
+            
+            buffer.setSample (channel, i, y);
         }
     }
 }
