@@ -31,6 +31,8 @@ private:
     juce::Slider preDelaySlider;
     juce::Slider decayTimeSlider;
     juce::Slider dryWetSlider;
+    
+    juce::Label preDelayLabel, decayLabel, dryWetLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReverbAudioProcessorEditor)
 };
